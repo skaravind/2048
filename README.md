@@ -1,4 +1,6 @@
-# 2048
+# 2048 
+## Mac Application
+
 I coded the popular game 2048 from scratch using processing.py. Just for fun :P
 
 Feel free to pull the repo and play.
