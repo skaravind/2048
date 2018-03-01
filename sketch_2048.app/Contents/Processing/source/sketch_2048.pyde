@@ -3,12 +3,19 @@ grid = [[0,0,0,0],
         [0,0,0,0],
         [0,0,0,0]]
 
+highscore = 0
+score = 0
+
 def log2(x):
     return (log(x)/log(2))
 
 def drawGrid(grid):
+    background(255)
+    global score
+    score = 0
     for i in range(len(grid)):
         for j in range(len(grid[0])):
+            score += grid[i][j]
             if grid[j][i] == 0:
                 fill(255)
                 rect(i*150, j*150, 150, 150, 7)
@@ -20,10 +27,13 @@ def drawGrid(grid):
                 textAlign(CENTER)
                 fill(0)
                 text("%s"%grid[j][i], 75 + i*150, 90 + j*150)
-                
+    textSize(20)
+    textAlign(CENTER)
+    fill(200,0,0)
+    text("Score => %d,  High Score => %s"%(score, highscore), 300,640)
 
 def setup():
-    size(600,600)
+    size(600,650)
     background(255)
     strokeWeight(3)
     drawGrid(grid)
@@ -99,6 +109,7 @@ def moveAllDown(grid):
     
 
 def generate_new(grid):
+    global score, highscore
     empties = []
     win = False
     for i in range(len(grid)):
@@ -110,8 +121,16 @@ def generate_new(grid):
     if len(empties) == 0:
         textSize(40)
         textAlign(CENTER)
-        fill(255,0,0)
-        text("GAME OVER", 300,300)
+        if highscore < score:
+            fill(0,255,0)
+            text("HIGH SCORE!!\nR to restart", 300,300)
+            highscore = score
+            score = 0
+        else:
+            fill(255,0,0)
+            text("GAME OVER\nR to restart", 300,300)
+            score = 0
+        
         return -1
     if win:
         drawGrid(grid)
@@ -128,19 +147,34 @@ def generate_new(grid):
 
 def draw():
     global grid
-    grid = generate_new(grid)
     if grid == -1:
-        noLoop()
+        pass
     else:
-        drawGrid(grid)
+        grid = generate_new(grid)
+        if grid == -1:
+            pass
+        else:
+            drawGrid(grid)
 
 def keyPressed():
-    if keyCode == UP:
-        moveAllUp(grid)
-    if keyCode == RIGHT:
-        moveAllRight(grid)
-    if keyCode == LEFT:
-        moveAllLeft(grid)
-    if keyCode == DOWN:
-        moveAllDown(grid)
-    redraw()
+    global grid
+    if grid != -1:
+        if keyCode == UP:
+            moveAllUp(grid)
+            redraw()
+        if keyCode == RIGHT:
+            moveAllRight(grid)
+            redraw()
+        if keyCode == LEFT:
+            moveAllLeft(grid)
+            redraw()
+        if keyCode == DOWN:
+            moveAllDown(grid)
+            redraw()
+    else:
+        if keyCode==82:
+            grid = [[0,0,0,0],
+                    [0,0,0,0],
+                    [0,0,0,0],
+                    [0,0,0,0]]
+            redraw()
